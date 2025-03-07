@@ -83,3 +83,52 @@
 // https://codesandbox.io/p/sandbox/sba-308-example-26sg4j
 // Use the sample data within this sandbox to begin your program, and test against the given result.
 // Afterwards, alter the data to test for edge cases, error handling, and other potential issues.
+
+
+
+const courseInfo = { // hold course details such as id and name
+    id: 338,
+  name: "Data Structures and Algorithms"
+}
+
+const assignmentGroup = {
+    id: 1,
+    name: "Homework", // Name of assignment group
+    course_id: 338, // Should match courseInfo.id 
+    group_weight: 60, // Weight percentage
+    assignments: [
+      {
+        id: 201,
+        name: "Queues",
+        due_at: "Date String",
+        points_possible: 100
+      },
+      {
+        id: 202,
+        name: "Linked List",
+        due_at: "Date String",
+        points_possible: 50
+      }
+    ]
+}
+
+const learnerSubmissions = [
+    {
+      learner_id: 301,
+      assignment_id: 201,
+      submission: {
+        submitted_at: new Date(), // Submitted on time
+        score: 90
+      }
+    },
+    {
+      learner_id: 301,
+      assignment_id: 202,
+      submission: {
+        submitted_at: "2025-03-07T17:28:49.405Z", // Late submission
+        score: 40
+      }
+    }
+  ];
+
+  console.log(learnerSubmissions)
