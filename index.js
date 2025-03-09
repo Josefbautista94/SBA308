@@ -1,85 +1,146 @@
-// SBA 308: JavaScript Fundamentals
-// Version 1.1, 10/13/23Click here to open in a separate window.
-// Introduction
-// This assessment gauges your understanding of fundamental JavaScript concepts and your ability to apply these concepts in a practical manner. While you are encouraged to be creative with your projects and implementations, keep in mind the specific topics that you are required to demonstrate understanding of, and make sure your project incorporates them appropriately.
-// This assessment has a total duration of two (2) days. This is a take-home assessment.
-// You have two total days (including weekends and holidays) to work on this assessment. This assessment will be due at 5:00pm on the second day after it is assigned. Your instructor may provide you with class time to work on the assessment, schedule permitting.
-// Objectives
-// Employ basic JavaScript syntax accurately.
-// Implement control flow structures such as conditionals and loops effectively.
-// Use arrays and objects to organize and manage data.
-// Develop functions to create reusable code.
-// Utilize loops and iteration to navigate through data collections.
-// Implement error handling to manage potential code failures gracefully.
-// Submission
-// Submit the link to your completed assessment using the Start Assignment button on the Assignment page in Canvas. 
-// Your submission should include:
-// A GitHub link to your completed project repository.
-// Instructions
-// You will create a script that gathers data, processes it, and then outputs a consistent result as described by a specification. This is a very typical situation in industry, and this particular scenario has been modified from a real application. The data you will use is provided below.
-// You will be provided with four different types of data:
-// A CourseInfo object, which looks like this:
-// {
-//   "id": number,
-//   "name": string,
-// }
+const courseInfo = { // hold course details such as id and name
+    id: 338,
+    name: "Data Structures and Algorithms"
+}
 
-// An AssignmentGroup object, which looks like this:
-// {
-//   "id": number,
-//   "name": string,
-//   // the ID of the course the assignment group belongs to
-//   "course_id": number,
-//   // the percentage weight of the entire assignment group
-//   "group_weight": number,
-//   "assignments": [AssignmentInfo],
-// }
+const assignmentGroup = {
+    id: 1,
+    name: "Homework", // Name of assignment group
+    course_id: 338, // Should match courseInfo.id 
+    group_weight: 60, // Weight percentage
+    assignments: [
+        {
+            id: 200,
+            name: "Stacks",
+            due_at: "2025-03-06T23:59:59.000Z",
+            points_possible: 50
+        },
+        {
+            id: 201,
+            name: "Arrays",
+            due_at: "2025-02-06T23:59:59.000Z",
+            points_possible: 100
+        },
+        {
+            id: 202,
+            name: "Linked List",
+            due_at: "2025-03-05T23:59:59.000Z",
+            points_possible: 50
+        },
+        {
+            id: 203,
+            name: "Queues",
+            due_at: "2025-03-06T23:59:59.000Z",
+            points_possible: 50
+        },
+        {
+            id: 204,
+            name: "Binary Search Trees",
+            due_at: "2025-03-06T23:59:59.000Z",
+            points_possible: 25
+        },
+        {
+            id: 205,
+            name: "Heaps",
+            due_at: "2025-03-06T23:59:59.000Z",
+            points_possible: 25
+        },
+        {
+            id: 206,
+            name: "Hash Tables",
+            due_at: "2025-03-06T23:59:59.000Z",
+            points_possible: 25
+        },
+        {
+            id: 207,
+            name: "Graphs",
+            due_at: "2025-03-06T23:59:59.000Z",
+            points_possible: 75
+        }
 
-// Each AssignmentInfo object within the assignments array looks like this:
-// {
-//   "id": number,
-//   "name": string,
-//   // the due date for the assignment
-//   "due_at": Date string,
-//   // the maximum points possible for the assignment
-//   "points_possible": number,
-// }
+    ],
+    name: "Homework", // Name of assignment group
+    course_id: 621, // Should match courseInfo.id 
+    group_weight: 40, // Weight percentage
+    assignments: [        {
+        id: 200,
+        name: "Spanish Verbs",
+        due_at: "2025-03-10T23:59:59.000Z",
+        points_possible: 70
+    }]
+}
 
-// An array of LearnerSubmission objects, which each look like this:
-// {
-//     "learner_id": number,
-//     "assignment_id": number,
-//     "submission": {
-//       "submitted_at": Date string,
-//       "score": number
-//     }
-// }
+const learnerSubmissions = [
+    {
+        learner_id: 159, // The students ID
+        assignment_id: 201, // The Assignment this submission is for
+        submission: {
+            submitted_at: "2025-02-06T19:45:59.000Z", // Submitted on time
+            score: 90
+        }
+    },
+    {
+        learner_id: 160,
+        assignment_id: 201,
+        submission: {
+            submitted_at: "2025-03-07T17:28:49.405Z", // Late submission
+            score: 80
+        }
+    },
+    {
+        learner_id: 179,
+        assignment_id: 201,
+        submission: {
+            submitted_at: "2025-03-02T17:28:49.405Z", // Late submission
+            score: 100
+        }
+    },
+    {
+        learner_id: 161,
+        assignment_id: 201,
+        submission: {
+            submitted_at: "2025-03-04T17:28:49.405Z", // Late submission
+            score: 75
+        }
+    },
+    {
+        learner_id: 145,
+        assignment_id: 201,
+        submission: {
+            submitted_at: "2025-03-05T17:28:49.405Z", // Late submission
+            score: 40
+        }
+    },
+];
 
-// Your goal is to analyze and transform this data such that the output of your program is an array of objects, each containing the following information in the following format:
-// {
-//     // the ID of the learner for which this data has been collected
-//     "id": number,
-//     // the learner’s total, weighted average, in which assignments
-//     // with more points_possible should be counted for more
-//     // e.g. a learner with 50/100 on one assignment and 190/200 on another
-//     // would have a weighted average score of 240/300 = 80%.
-//     "avg": number,
-//     // each assignment should have a key with its ID,
-//     // and the value associated with it should be the percentage that
-//     // the learner scored on the assignment (submission.score / points_possible)
-//     <assignment_id>: number,
-//     // if an assignment is not yet due, it should not be included in either
-//     // the average or the keyed dictionary of scores
-// }
+function doesItBelongToCourse() {
+    try {
+        if (assignmentGroup.course_id !== courseInfo.id) {
 
-// If an AssignmentGroup does not belong to its course (mismatching course_id), your program should throw an error, letting the user know that the input was invalid. Similar data validation should occur elsewhere within the program.
-// You should also account for potential errors in the data that your program receives. What if points_possible is 0? You cannot divide by zero. What if a value that you are expecting to be a number is instead a string? 
-// Use try/catch and other logic to handle these types of errors gracefully.
-// If an assignment is not yet due, do not include it in the results or the average. Additionally, if the learner’s submission is late (submitted_at is past due_at), deduct 10 percent of the total points possible from their score for that assignment.
-// Create a function named getLearnerData() that accepts these values as parameters, in the order listed: (CourseInfo, AssignmentGroup, [LearnerSubmission]), and returns the formatted result, which should be an array of objects as described above.
-// You may use as many helper functions as you see fit.
-// Example
-// Below, we included a live example showing a specific set of input data, and the resulting output. Our program simply logs the appropriate result - attempting to circumvent the assignment by doing this will result in a failing grade.
-// https://codesandbox.io/p/sandbox/sba-308-example-26sg4j
-// Use the sample data within this sandbox to begin your program, and test against the given result.
-// Afterwards, alter the data to test for edge cases, error handling, and other potential issues.
+            throw new Error(`This assignment isn't for this course!`) // 
+        }
+        return true; // If there's no problem return true!
+    }
+    catch(error){
+        console.error(error.message);
+        return false; // will throw false if there is an error
+
+    }
+}
+
+function isAssignmentDue(submission, assignment) {
+    try {
+
+        let assignment = null; // storing the assignment here if its found
+        for (let i = 0; i < assignment.length; i++) {
+
+        }
+
+    }
+    catch {
+
+    }
+
+}
+
+console.log(isAssignmentDue(assignmentGroup))
