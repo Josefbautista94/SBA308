@@ -173,10 +173,10 @@ function isAssignmentDue(submission, assignments) {
         late : lateWork,
         whenSubmitted: submittedAt,
         dueAt : whenItsDue
-        
+
 
     }
-        
+
     }
 
      catch (error) {
@@ -186,6 +186,33 @@ function isAssignmentDue(submission, assignments) {
 
 }
 
-for (let i = 0; i < learnerSubmissions.length; i++) {
-    console.log(isAssignmentDue(learnerSubmissions[i], assignmentGroup.assignments))
+function findingAssignment(submission, assignment) {
+
+    try {
+        let foundAssignment = null;
+        for (let i = 0; i < assignment.length; i++) {
+            if (assignment[i].id == submission.assignment_id) {
+                foundAssignment = assignment[i];
+                break; //once we find the assignment it stops the loop
+            }
+        }
+        if (!foundAssignment) {
+            throw new Error(`The assignment: ${submission.assignment_id} doesn't exist, Maybe the wrong class? 🤔`)
+        }
+        return foundAssignment;
+    }
+    catch (error) {
+        console.error(error.message)
+        return false;
+    }
+
+    
+}
+for(let i = 0; i < learnerSubmissions.length; i ++){
+console.log(findingAssignment(learnerSubmissions[i],assignmentGroup.assignments))
+
+}
+
+function isWorkLate(submittedAt, DueAt){
+
 }
