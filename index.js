@@ -164,22 +164,22 @@ function isAssignmentDue(submission, assignments) {
         // console.log(whenItsDue)
         // console.log(submittedAt)
 
-    //Working on the logic to see if the assignment is late
+        //Working on the logic to see if the assignment is late
 
-    let lateWork = submittedAt > whenItsDue;
+        let lateWork = submittedAt > whenItsDue;
 
-    return{
-        assignment : foundAssignment,
-        late : lateWork,
-        whenSubmitted: submittedAt,
-        dueAt : whenItsDue
+        return {
+            assignment: foundAssignment,
+            late: lateWork,
+            whenSubmitted: submittedAt,
+            dueAt: whenItsDue
 
+
+        }
 
     }
 
-    }
-
-     catch (error) {
+    catch (error) {
         console.error(error.message)
         return false;
     }
@@ -206,13 +206,23 @@ function findingAssignment(submission, assignment) {
         return false;
     }
 
-    
-}
-for(let i = 0; i < learnerSubmissions.length; i ++){
-console.log(findingAssignment(learnerSubmissions[i],assignmentGroup.assignments))
 
 }
+for (let i = 0; i < learnerSubmissions.length; i++) {
+    console.log(findingAssignment(learnerSubmissions[i], assignmentGroup.assignments))
 
-function isWorkLate(submittedAt, DueAt){
+}
+//checking if work is late by returning a true or false statement
+function isWorkLate(submittedAt, dueAt) {
+    return submittedAt > dueAt;
+}
 
+// looping through the array of objects to look at the submissions
+for (let i = 0; i < learnerSubmissions.length; i++) {
+    let submissions = learnerSubmissions[i]
+    let assignments = findingAssignment(submissions, assignmentGroup.assignments)
+    if (assignments) {
+        console.log(` Is Student ${submissions.learner_id} late?:`, isWorkLate(new Date(submissions.submission.submitted_at), new Date(assignments.due_at)));
+        //converting date strings to date objects to be able to compare them in the function
+    }
 }
