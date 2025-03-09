@@ -58,16 +58,7 @@ const assignmentGroup = {
             points_possible: 75
         }
 
-    ],
-    name: "Homework", // Name of assignment group
-    course_id: 621, // Should match courseInfo.id 
-    group_weight: 40, // Weight percentage
-    assignments: [        {
-        id: 200,
-        name: "Spanish Verbs",
-        due_at: "2025-03-10T23:59:59.000Z",
-        points_possible: 70
-    }]
+    ]
 }
 
 const learnerSubmissions = [
@@ -111,6 +102,14 @@ const learnerSubmissions = [
             score: 40
         }
     },
+    {
+        learner_id: 181, 
+        assignment_id: 720, // This ID does not exist, should throw an error
+        submission: {
+            submitted_at: "2025-02-06T19:45:59.000Z",
+            score: 90
+        }
+    }
 ];
 
 function doesItBelongToCourse() {
