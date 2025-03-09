@@ -18,7 +18,7 @@ const assignmentGroup = {
         {
             id: 201,
             name: "Arrays",
-            due_at: "2025-02-06T23:59:59.000Z",
+            due_at: "2025-03-06T23:59:59.000Z",
             points_possible: 100
         },
         {
@@ -48,17 +48,19 @@ const assignmentGroup = {
         {
             id: 206,
             name: "Hash Tables",
-            due_at: "2025-03-06T23:59:59.000Z",
+            due_at: "2025-03-08T23:59:59.000Z",
             points_possible: 25
         },
         {
             id: 207,
             name: "Graphs",
-            due_at: "2025-03-06T23:59:59.000Z",
+            due_at: "2025-03-09T23:59:59.000Z",
             points_possible: 75
         }
 
-    ]
+    ],
+
+
 }
 
 const learnerSubmissions = [
@@ -66,7 +68,7 @@ const learnerSubmissions = [
         learner_id: 159, // The students ID
         assignment_id: 201, // The Assignment this submission is for
         submission: {
-            submitted_at: "2025-02-06T19:45:59.000Z", // Submitted on time
+            submitted_at: "2025-03-06T19:45:59.000Z", // Submitted on time
             score: 90
         }
     },
@@ -103,11 +105,19 @@ const learnerSubmissions = [
         }
     },
     {
-        learner_id: 181, 
+        learner_id: 181,
         assignment_id: 720, // This ID does not exist, should throw an error
         submission: {
-            submitted_at: "2025-02-06T19:45:59.000Z",
+            submitted_at: "2025-03-06T19:45:59.000Z",
             score: 90
+        }
+    },
+    {
+        learner_id: 145,
+        assignment_id: 203,
+        submission: {
+            submitted_at: "2025-03-05T17:28:49.405Z", // Late submission
+            score: 40
         }
     }
 ];
@@ -116,30 +126,66 @@ function doesItBelongToCourse() {
     try {
         if (assignmentGroup.course_id !== courseInfo.id) {
 
-            throw new Error(`This assignment isn't for this course!`) // 
+            throw new Error(`This assignment: ${assignmentGroup.course_id} isn't for this course!`) // 
         }
-        return true; // If there's no problem return true!
+
+        return `${assignmentGroup.course_id} belongs to this course!`; // If there's no problem return true!
     }
-    catch(error){
+    catch (error) {
         console.error(error.message);
         return false; // will throw false if there is an error
 
     }
 }
 
-function isAssignmentDue(submission, assignment) {
+console.log(doesItBelongToCourse())
+
+
+function isAssignmentDue(submission, assignments) {
     try {
 
-        let assignment = null; // storing the assignment here if its found
-        for (let i = 0; i < assignment.length; i++) {
+        let foundAssignment = null; // storing the assignment here if its found
 
+        // Looping to see if the assignment exists so we can store it in the assignment variable
+        for (let i = 0; i < assignments.length; i++) {
+            if (assignments[i].id === submission.assignment_id) {
+                foundAssignment = assignments[i]
+                break; //once we find the assignment it stops the loop
+            }
         }
 
-    }
-    catch {
+        if (!foundAssignment) {
+            throw new Error(`The assignment: ${submission.assignment_id} doesn't exist, Maybe the wrong class? 🤔`)
+        }
 
+        //conveeritng the due date and sub date to date objects
+        const whenItsDue = new Date(foundAssignment.due_at)
+        const submittedAt = new Date(submission.submission.submitted_at)
+        // console.log(whenItsDue)
+        // console.log(submittedAt)
+
+    //Working on the logic to see if the assignment is late
+
+    let lateWork = submittedAt > whenItsDue;
+
+    return{
+        assignment : foundAssignment,
+        late : lateWork,
+        whenSubmitted: submittedAt,
+        dueAt : whenItsDue
+        
+
+    }
+        
+    }
+
+     catch (error) {
+        console.error(error.message)
+        return false;
     }
 
 }
 
-console.log(isAssignmentDue(assignmentGroup))
+for (let i = 0; i < learnerSubmissions.length; i++) {
+    console.log(isAssignmentDue(learnerSubmissions[i], assignmentGroup.assignments))
+}
