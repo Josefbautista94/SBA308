@@ -251,5 +251,4 @@ for (let i = 0; i < results.length; i++) {
     average(results[i], assignmentGroup.assignments);
 }
 
-// Pretty-print the final results
-console.log(JSON.stringify(results, null, 2));
+console.log(JSON.stringify(results, null, 2)); // results 
