@@ -142,27 +142,27 @@ console.log(doesItBelongToCourse())
 
 // Function to find out if the assignment exists or not
 function findingAssignment(submission, assignment) {
-
     try {
         let foundAssignment = null;
         for (let i = 0; i < assignment.length; i++) {
             if (assignment[i].id == submission.assignment_id) {
+                if (assignment[i].points_possible === 0) {
+                    throw new Error(`Assignment ${assignment[i].id} has zero possible points, skipping.`); // cannot divide by 0
+                }
                 foundAssignment = assignment[i];
-                break; //once we find the assignment it stops the loop
+                break; // Once we find the assignment, stop the loop
             }
         }
         if (!foundAssignment) {
-            throw new Error(`The assignment: ${submission.assignment_id} doesn't exist, Maybe the wrong class? 🤔`)
+            throw new Error(`The assignment: ${submission.assignment_id} doesn't exist, Maybe the wrong class? 🤔`);
         }
         return foundAssignment;
-    }
-    catch (error) {
-        console.error(error.message)
+    } catch (error) {
+        console.error(error.message);
         return false;
     }
-
-
 }
+
 for (let i = 0; i < learnerSubmissions.length; i++) {
     console.log(findingAssignment(learnerSubmissions[i], assignmentGroup.assignments))
 
@@ -182,17 +182,74 @@ for (let i = 0; i < learnerSubmissions.length; i++) {
     }
 }
 
-// function to deduct points if late
-function penalizedOrNot(score,isLate){
-    return isLate ? score * 0.80 : score;
-    
+// function to deduct points if late or not if it isnt late
+function penalizedOrNot(score, isLate) {
+    return isLate ? score * 0.90 : score;
+
 }
 
-for(let i =0; i < learnerSubmissions.length; i++){
+for (let i = 0; i < learnerSubmissions.length; i++) {
     let submissions = learnerSubmissions[i]
     let assignments = findingAssignment(submissions, assignmentGroup.assignments);
 
-    if(assignments){
-    let isLate = isWorkLate(new Date(submissions.submission.submitted_at), new Date(assignments.due_at));
-console.log(`Student ${submissions.learner_id} gets a : ` + penalizedOrNot(submissions.submission.score,isLate))
-}}
+    if (assignments) {
+        let isLate = isWorkLate(new Date(submissions.submission.submitted_at), new Date(assignments.due_at));
+        console.log(`Student ${submissions.learner_id} gets a : ` + penalizedOrNot(submissions.submission.score, isLate))
+    }
+}
+
+function average(learner, assignments){
+    let totalScore = 0;
+    let maxScore = 0;
+
+    for(let i = 0; i < assignments.length; i++){
+        let assignment = assignments[i]
+    
+    if(learner[assignment.id] !== undefined){
+        let maxPointsPossible = assignment.points_possible;
+        totalScore +=  (learner[assignment.id] /100 )* maxPointsPossible 
+        maxScore += maxPointsPossible;
+    }
+    }
+    learner.avg = maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
+
+}
+
+function getLearnerData(submissions,assignments){
+
+    let dataArray = [];
+
+    for(let i = 0; i < submissions.length; i++){
+        let submission = submissions[i];
+        let assignment = findingAssignment(submission,assignments);
+        if (!assignment) continue; 
+
+        let isLate = isWorkLate(new Date(submission.submission.submitted_at), new Date(assignment.due_at));
+
+        let finalScore = penalizedOrNot(submission.submission.score, isLate);
+        let percentageScore = (finalScore / assignment.points_possible) * 100;
+
+        let learner = dataArray.find(l => l.id === submission.learner_id);
+        if (!learner) {
+            learner = { id: submission.learner_id };
+            dataArray.push(learner);
+        }
+
+        learner[assignment.id] = percentageScore;
+    }
+
+    return dataArray;
+
+
+}
+
+
+let results = getLearnerData(learnerSubmissions, assignmentGroup.assignments);
+
+// Apply `average()` for each learner
+for (let i = 0; i < results.length; i++) {
+    average(results[i], assignmentGroup.assignments);
+}
+
+// Pretty-print the final results
+console.log(JSON.stringify(results, null, 2));
