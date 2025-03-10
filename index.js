@@ -140,52 +140,59 @@ function doesItBelongToCourse() {
 
 console.log(doesItBelongToCourse())
 
+// Function to find out if the assignment exists or not
+function findingAssignment(submission, assignment) {
 
-function isAssignmentDue(submission, assignments) {
     try {
-
-        let foundAssignment = null; // storing the assignment here if its found
-
-        // Looping to see if the assignment exists so we can store it in the assignment variable
-        for (let i = 0; i < assignments.length; i++) {
-            if (assignments[i].id === submission.assignment_id) {
-                foundAssignment = assignments[i]
+        let foundAssignment = null;
+        for (let i = 0; i < assignment.length; i++) {
+            if (assignment[i].id == submission.assignment_id) {
+                foundAssignment = assignment[i];
                 break; //once we find the assignment it stops the loop
             }
         }
-
         if (!foundAssignment) {
             throw new Error(`The assignment: ${submission.assignment_id} doesn't exist, Maybe the wrong class? 🤔`)
         }
-
-        //conveeritng the due date and sub date to date objects
-        const whenItsDue = new Date(foundAssignment.due_at)
-        const submittedAt = new Date(submission.submission.submitted_at)
-        // console.log(whenItsDue)
-        // console.log(submittedAt)
-
-    //Working on the logic to see if the assignment is late
-
-    let lateWork = submittedAt > whenItsDue;
-
-    return{
-        assignment : foundAssignment,
-        late : lateWork,
-        whenSubmitted: submittedAt,
-        dueAt : whenItsDue
-        
-
+        return foundAssignment;
     }
-        
-    }
-
-     catch (error) {
+    catch (error) {
         console.error(error.message)
         return false;
     }
 
+
+}
+for (let i = 0; i < learnerSubmissions.length; i++) {
+    console.log(findingAssignment(learnerSubmissions[i], assignmentGroup.assignments))
+
+}
+//checking if work is late by returning a true or false statement
+function isWorkLate(submittedAt, dueAt) {
+    return submittedAt > dueAt;
 }
 
+// looping through the array of objects to look at the submissions
 for (let i = 0; i < learnerSubmissions.length; i++) {
-    console.log(isAssignmentDue(learnerSubmissions[i], assignmentGroup.assignments))
+    let submissions = learnerSubmissions[i]
+    let assignments = findingAssignment(submissions, assignmentGroup.assignments) //reusing the finidng assignment function that we created earlier
+    if (assignments) { // if theres an assignment we console.log the results to see if its late or not
+        console.log(` Is Student ${submissions.learner_id} late?:`, isWorkLate(new Date(submissions.submission.submitted_at), new Date(assignments.due_at)));
+        //converting date strings to date objects to be able to compare them in the function
+    }
 }
+
+// function to deduct points if late
+function penalizedOrNot(score,isLate){
+    return isLate ? score * 0.80 : score;
+    
+}
+
+for(let i =0; i < learnerSubmissions.length; i++){
+    let submissions = learnerSubmissions[i]
+    let assignments = findingAssignment(submissions, assignmentGroup.assignments);
+
+    if(assignments){
+    let isLate = isWorkLate(new Date(submissions.submission.submitted_at), new Date(assignments.due_at));
+console.log(`Student ${submissions.learner_id} gets a : ` + penalizedOrNot(submissions.submission.score,isLate))
+}}
